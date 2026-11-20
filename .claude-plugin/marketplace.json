@@ -1,0 +1,14 @@
+{
+  "name": "heap-dump-cli",
+  "description": "Java heap dump analysis for agents",
+  "owner": {
+    "name": "The heap-dump-cli Authors"
+  },
+  "plugins": [
+    {
+      "name": "heap-dump",
+      "source": "./plugins/heap-dump",
+      "description": "Analyze Java heap dumps with the hd CLI (requires hd to be installed, see README)"
+    }
+  ]
+}

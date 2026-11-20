@@ -1,0 +1,26 @@
+# Gradle
+.gradle/
+build/
+
+# Heap dumps and engine index files (fixtures are generated into fixtures/build/dumps)
+*.hprof
+*.hprof.gz
+*.phd
+*.index
+*.threads
+*.hd-engine.properties
+*.hd-skill.properties
+
+# Downloaded / built archives (scripts/install-mat.sh downloads MAT into a temp dir)
+*.zip
+*.tar.gz
+
+# IDEs and OS
+.idea/
+*.iml
+.vscode/
+out/
+.DS_Store
+
+# Local Claude Code settings
+.claude/settings.local.json

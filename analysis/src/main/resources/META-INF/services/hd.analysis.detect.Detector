@@ -1,0 +1,6 @@
+hd.analysis.detect.BigRetainersDetector
+hd.analysis.detect.ClassLoaderDetector
+hd.analysis.detect.CollectionsDetector
+hd.analysis.detect.DirectBuffersDetector
+hd.analysis.detect.DupStringsDetector
+hd.analysis.detect.ThreadLocalDetector

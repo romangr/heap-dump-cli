@@ -1,0 +1,16 @@
+{
+  "name": "heap-dump",
+  "version": "0.1.0",
+  "description": "Analyze Java heap dumps (memory leaks, OutOfMemoryError, retained memory) with the hd CLI, an Eclipse MAT-based analyzer.",
+  "license": "Apache-2.0",
+  "keywords": [
+    "java",
+    "heap-dump",
+    "hprof",
+    "memory-leak",
+    "eclipse-mat"
+  ],
+  "author": {
+    "name": "The heap-dump-cli Authors"
+  }
+}

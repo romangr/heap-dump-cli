@@ -1,0 +1,8 @@
+heap-dump-cli
+Copyright 2026 The heap-dump-cli Authors
+
+This product is licensed under the Apache License, Version 2.0 (see LICENSE).
+
+The binary distribution bundles third-party components, including Eclipse Memory Analyzer (MAT) and Eclipse
+Platform libraries licensed under the Eclipse Public License 2.0. See THIRD-PARTY-NOTICES.md for the full list,
+their licenses and source locations.

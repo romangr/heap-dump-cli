@@ -1,0 +1,25 @@
+[versions]
+mat = "1.17.0"
+eclipse-runtime = "3.34.200"
+eclipse-registry = "3.12.500"
+eclipse-common = "3.20.400"
+picocli = "4.7.7"
+junit = "6.1.3"
+archunit = "1.5.1"
+jackson = "2.22.4"
+
+[libraries]
+mat-report = { module = "org.eclipse.mat:org.eclipse.mat.report", version.ref = "mat" }
+mat-api = { module = "org.eclipse.mat:org.eclipse.mat.api", version.ref = "mat" }
+mat-parser = { module = "org.eclipse.mat:org.eclipse.mat.parser", version.ref = "mat" }
+mat-hprof = { module = "org.eclipse.mat:org.eclipse.mat.hprof", version.ref = "mat" }
+eclipse-runtime = { module = "org.eclipse.platform:org.eclipse.core.runtime", version.ref = "eclipse-runtime" }
+eclipse-registry = { module = "org.eclipse.platform:org.eclipse.equinox.registry", version.ref = "eclipse-registry" }
+eclipse-common = { module = "org.eclipse.platform:org.eclipse.equinox.common", version.ref = "eclipse-common" }
+picocli = { module = "info.picocli:picocli", version.ref = "picocli" }
+junit-bom = { module = "org.junit:junit-bom", version.ref = "junit" }
+archunit = { module = "com.tngtech.archunit:archunit-junit5", version.ref = "archunit" }
+jackson-databind = { module = "com.fasterxml.jackson.core:jackson-databind", version.ref = "jackson" }
+
+[bundles]
+mat = ["mat-report", "mat-api", "mat-parser", "mat-hprof", "eclipse-runtime", "eclipse-registry", "eclipse-common"]
