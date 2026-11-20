@@ -32,6 +32,7 @@ tasks.test {
 
 distributions {
     main {
+        distributionBaseName.set("hd")
         contents {
             from(rootProject.file("LICENSE"))
             from(rootProject.file("NOTICE"))
@@ -44,4 +45,14 @@ distributions {
 // the skill ships inside cli.jar so `hd skill install` always installs the version matching the binary
 tasks.named<ProcessResources>("processResources") {
     from(rootProject.file("plugins/heap-dump/skills/heap-dump/SKILL.md")) { into("hd/skill") }
+}
+
+// archives unpack into a stable top-level "hd/" folder; the version is in the file name only
+tasks.withType<AbstractArchiveTask>().matching { it.name == "distZip" || it.name == "distTar" }.configureEach {
+    eachFile { path = path.replaceFirst(Regex("^hd-[^/]+/"), "hd/") }
+    includeEmptyDirs = false
+}
+tasks.named<Tar>("distTar") {
+    compression = Compression.GZIP
+    archiveExtension.set("tar.gz")
 }

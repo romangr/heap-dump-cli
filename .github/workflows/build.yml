@@ -1,0 +1,101 @@
+name: build
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: build-${{ github.ref }}
+  # superseded PR builds are cancelled; main builds run to completion so the release is never left half-replaced
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-java@v6
+        with:
+          distribution: corretto
+          java-version: '21'
+
+      - uses: gradle/actions/setup-gradle@v6
+
+      # MAT is not on Maven Central: install-mat.sh downloads the SHA-512 pinned archive into ~/.m2
+      - name: Cache Eclipse MAT
+        uses: actions/cache@v6
+        with:
+          path: ~/.m2/repository/org/eclipse/mat
+          key: mat-${{ hashFiles('scripts/install-mat.sh') }}
+
+      - name: Install Eclipse MAT
+        run: scripts/install-mat.sh
+
+      - name: Build and test
+        run: ./gradlew build :cli:distZip :cli:distTar
+
+      - name: Upload test reports
+        if: failure()
+        uses: actions/upload-artifact@v7
+        with:
+          name: test-reports
+          path: '*/build/reports/tests/'
+          retention-days: 7
+
+      - name: Upload distribution
+        uses: actions/upload-artifact@v7
+        with:
+          name: hd-distribution
+          path: |
+            cli/build/distributions/*.zip
+            cli/build/distributions/*.tar.gz
+          retention-days: 7
+
+  release:
+    needs: build
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    concurrency:
+      group: continuous-release
+      cancel-in-progress: false
+    steps:
+      - uses: actions/download-artifact@v8
+        with:
+          name: hd-distribution
+          path: dist
+
+      - name: Stable asset names and checksums
+        working-directory: dist
+        run: |
+          mv hd-*.zip hd.zip
+          mv hd-*.tar.gz hd.tar.gz
+          sha256sum hd.zip hd.tar.gz > SHA256SUMS
+
+      - name: Replace the continuous release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          gh release delete continuous --cleanup-tag --yes || true
+          cat > notes.md <<NOTES
+          Automatic build of \`main\` at ${GITHUB_SHA::7} ($(date -u +%Y-%m-%dT%H:%MZ)). Replaced on every push; not a stable release.
+
+          Requires Java 21+. Unpack, add \`bin/\` to your PATH, then install the agent skill:
+
+          \`\`\`bash
+          curl -fsSL https://github.com/${GH_REPO}/releases/download/continuous/hd.tar.gz | tar -xz
+          export PATH="\$PWD/hd/bin:\$PATH"
+          hd skill install
+          \`\`\`
+          NOTES
+          gh release create continuous dist/hd.zip dist/hd.tar.gz dist/SHA256SUMS \
+            --target "$GITHUB_SHA" --prerelease --title "Continuous build" --notes-file notes.md

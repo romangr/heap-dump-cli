@@ -1,5 +1,7 @@
 # heap-dump-cli (`hd`)
 
+[![build](https://github.com/romangr/heap-dump-cli/actions/workflows/build.yml/badge.svg)](https://github.com/romangr/heap-dump-cli/actions/workflows/build.yml)
+
 Command-line Java heap dump analyzer built for agents (Claude skill) and terminals, using the Eclipse Memory
 Analyzer (MAT) core as its engine — behind an engine interface, so the engine can be replaced later.
 
@@ -12,13 +14,23 @@ Analyzer (MAT) core as its engine — behind an engine interface, so the engine 
 
 ## Install
 
-Requires Java 21+.
+Requires Java 21+ (macOS or Linux).
+
+The latest build of `main` is published as the [continuous release](https://github.com/romangr/heap-dump-cli/releases/tag/continuous)
+(replaced on every push, not a stable release):
+
+```bash
+curl -fsSL https://github.com/romangr/heap-dump-cli/releases/download/continuous/hd.tar.gz | tar -xz
+export PATH="$PWD/hd/bin:$PATH"
+hd --help
+```
+
+From source:
 
 ```bash
 scripts/install-mat.sh          # downloads MAT 1.17.0 (SHA-512 pinned) into ~/.m2 (MAT is not on Maven Central)
 ./gradlew :cli:installDist      # → cli/build/install/hd
 export PATH="$PWD/cli/build/install/hd/bin:$PATH"
-hd --help
 ```
 
 ### Agent skill (Claude Code, Codex, GitHub Copilot)
@@ -48,7 +60,7 @@ Claude Code users can alternatively install the skill as a plugin from this repo
 still has to be installed). Avoid installing both ways, or Claude sees the skill twice:
 
 ```
-/plugin marketplace add <owner>/heap-dump-cli
+/plugin marketplace add romangr/heap-dump-cli
 /plugin install heap-dump@heap-dump-cli
 ```
 
@@ -108,6 +120,8 @@ cli ──socket──▶ daemon ──▶ analysis (views, detectors, redaction
   distribution and the Claude Code plugin; marketplace manifest in `.claude-plugin/marketplace.json`).
 
 Design and plan: `docs/plans/2026-11-20-heap-dump-cli.md`. Tests: `./gradlew test`.
+CI (`.github/workflows/build.yml`) builds and tests every push and pull request; pushes to `main` replace the
+`continuous` release with `hd.zip`, `hd.tar.gz` and `SHA256SUMS`.
 
 ## License
 
